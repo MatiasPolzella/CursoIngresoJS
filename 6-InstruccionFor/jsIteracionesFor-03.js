@@ -1,8 +1,11 @@
 function mostrar()
 {
+	let cantidad;
 
-	var repetciones = prompt("ingrese el número de repeticiones");
-	alert("ok");
+	cantidad = parseInt(prompt("Ingrese un numero: "));
 
+	for(let i = 0; i < cantidad; i++){
+		document.write("Hola UTNFRA <br>");
+	}
 
-}//FIN DE LA FUNCIÓN
+}
