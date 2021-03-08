@@ -1,128 +1,104 @@
+/*
+Realizar el algoritmo que permita ingresar los datos de una compra productos de la construccion, hasta que el cliente quiera:
+Tipo validad("arena";"cal";"cemento")
+Cantidad de bolsas,
+Precio por bolsa (más de cero ),
+
+Si compro más de 10 bolsas en total tenes 15% de descuento sobre el total a pagar.
+Si compro más de 30 bolsas en total tenes 25% de descuento sobre el total a pagar.
+a) El importe total a pagar , bruto sin descuento y...
+b) el importe total a pagar con descuento(solo si corresponde)
+d) Informar el tipo con mas cantidad de bolsas.
+f) El tipo mas caro
+*/
 function mostrar()
 {
-    let tipo;
-    let cantidadDeBolsas;
-    let precioPorBolsa;
-    let respuesta;
-    let acumuladorDeBolsas;
-    let precioBrutoTotal;
-    let precioBrutoProducto;
-    let porcentaje;
+    let precio;
+    let cantidad;
+    let importe;
+    let subtotal = 0;
+    let seguir;
+    let acumC = 0;
+    let acumCal = 0;
+    let acumA = 0;
+    let acumBolsas = 0;
     let descuento;
-    let precioConDescuento;
-    let acumuladorCal;
-    let acumuladorCemento;
-    let acumuladorArena;
-    let tipoConMasUnidades;
-    let banderaDelPrimerProducto;
-    let tipoMasCaro;
-    let tipoMasCaroPrecio;
-    
+    let neto;
+    let maxPrecio;
+    let maxTipo;
+    let flag = 1  // porque es del tipo desea continuar
+    let tipoMaxBolsas;
 
 
-
-    banderaDelPrimerProducto = "es el primero";
-    acumuladorCal = 0;
-    acumuladorCemento = 0;
-    acumuladorArena = 0;
-
-    acumuladorDeBolsas = 0;
-    precioBrutoTotal = 0;
-
-    respuesta = "s";
-    while (respuesta == "s"){
-        tipo = prompt("Ingrese tipo");
-        while (tipo != "arena" && tipo != "cal" && tipo != "cemento"){
-            tipo = prompt("Error. Ingrese tipo");
+    do{
+        tipo = prompt("Ingrese tipo cal/arena/cemento: ");
+        while(tipo != "cal" && tipo != "cemento" && tipo != "arena"){
+            tipo = prompt("Error. Ingrese tipo cal/arena/cemento: ");
         }
-
-        cantidadDeBolsas = prompt("Ingrese cantidad de bolsas");
-        cantidadDeBolsas = parseInt(cantidadDeBolsas);
-        while (cantidadDeBolsas < 1) {
-            cantidadDeBolsas = prompt("Error. Ingrese cantidad de bolsas");
-            cantidadDeBolsas = parseInt(cantidadDeBolsas);
+        cantidad = parseInt(prompt("Ingrese cantidad: "));
+        while(isNaN(cantidad) || cantidad <= 0){
+            cantidad = parseInt(prompt("Error. Ingrese cantidad: "));
         }
-
-        precioPorBolsa = prompt("Ingrese cantidad de bolsas");
-        precioPorBolsa = parseInt(precioPorBolsa);
-        while (precioPorBolsa < 1) {
-            precioPorBolsa = prompt("Error. Ingrese cantidad de bolsas");
-            precioPorBolsa = parseInt(precioPorBolsa);
+        precio = parseInt(prompt("Ingrese precio: "));
+        while(isNaN(precio) || precio <= 0){
+            precio = parseInt(prompt("Error. Ingrese cantidad: "));
         }
+        importe = precio * cantidad;
+        subtotal += importe;
 
-        acumuladorDeBolsas = acumuladorDeBolsas + cantidadDeBolsas;
-        precioBrutoProducto = cantidadDeBolsas * precioPorBolsa;
-        precioBrutoTotal = precioBrutoTotal + precioBrutoProducto;
+        acumBolsas += cantidad;
 
-        if (banderaDelPrimerProducto == "es el primero"){
-            banderaDelPrimerProducto = "ya paso";
-            tipoMasCaro = tipo;
-            tipoMasCaroPrecio = precioPorBolsa;
-        } else{
-            if (precioPorBolsa > tipoMasCaroPrecio){
-            tipoMasCaro = tipo;
-            tipoMasCaroPrecio = precioPorBolsa;
-            }
-        }
-
-        switch(tipo)
-        {
+        switch(tipo){
             case "arena":
-            acumuladorArena = acumuladorArena + cantidadDeBolsas    
-            break;
-            case "cal":
-            acumuladorCal = acumuladorCal + cantidadDeBolsas    
-            break;
-            case "cemento":
-            acumuladorCemento = acumuladorCemento + cantidadDeBolsas    
-            break;
+                acumA += cantidad;
+                break;
+                case "cal":
+                acumCal += cantidad;
+                break;
+                case "cemento":
+                acumC += cantidad;
+                break;
         }
 
-
-
-        respuesta = prompt("Seguir ?")
-    }
-
-    if (acumuladorArena > acumuladorCemento && acumuladorArena > acumuladorCal){
-        //arena
-        tipoConMasUnidades = "arena";
-
-    } else{
-        if (acumuladorCal > acumuladorCemento){
-            //cal
-            tipoConMasUnidades = "cal";
-        } else {
-            //cemento
-            tipoConMasUnidades = "cemento";
+        if (flag || precio > maxPrecio){
+            maxPrecio = precio;
+            maxTipo = tipo;
+            flag = 0;
         }
+
+        seguir = prompt("Quiere comprar algo mas ?");
+    }while (seguir == 's');
+
+    //calculo el descuento
+    if (acumBolsas < 10){
+        descuento = 0;
+    }
+    else if(acumBolsas < 30){
+        descuento = 0.15;
+    }
+    else{
+        descuento = 0.25;
     }
 
+    if (acumA > acumC && acumA > acumCal){
+        tipoMaxBolsas = "Arena";
+    }
+    else if (acumC >= acumA && acumC > acumCal){
+        tipoMaxBolsas = "Cemento";
+    }
+    else {
+        tipoMaxBolsas = "Cal";
+    }
 
+    console.log("a- Importe Bruto a pagar $ " + subtotal);
 
+    if (descuento !=0){
+        neto = subtotal - subtotal * descuento;
+        console.log("b- Importe neto a pagar $ " + neto);
+    }
 
+    console.log("d- el tipo con mas cantidad de bolsas es " + tipoMaxBolsas);
 
- if (acumuladorDeBolsas > 30)
- {
-     porcentaje = 25;
- }else 
- {
-   if (acumuladorDeBolsas > 10)
-     {
-         porcentaje = 15;
-     }else
-     {
-         porcentaje = 0;
-     }
- }
-if (porcentaje != 0 ){
-    descuento = precioBrutoTotal * porcentaje / 100;
-    precioConDescuento = precioBrutoTotal - descuento;  
-    console.log ("Pagar con descuento: " + precioConDescuento);
-}
-// El importe total a pagar, bruto sin descuento
-console.log ("bruto sin descuento: " + precioBrutoTotal);
-console.log ("el tipo mas comprado es: " + tipoConMasUnidades);
-console.log ("el tipo mas comprado es: " + tipoMasCaro);
-
+    console.log("f- el tipo mas caro es " + maxTipo + " con un valor de $" + maxPrecio);
 
 }
